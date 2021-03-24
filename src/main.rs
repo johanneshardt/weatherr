@@ -5,7 +5,7 @@ fn main() {
         Err(e) => panic!("Invalid response: {}", e),
     };
 
-    match report::generate_report(res) {
+    match report::Report::new(res) {
         Ok(r) => println!("Report: {:#?}", r.geometry),
         Err(e) => panic!("Couldn't deserialize: {}", e),
     }
@@ -26,10 +26,11 @@ pub fn response() -> Result<String, attohttpc::Error> {
     Ok(attohttpc::get(link).send()?.text()?)
 }
 
+#[allow(non_snake_case)]
 mod report {
     use serde::{Deserialize, Serialize};
 
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Serialize, Deserialize, Debug, Clone)]
     struct Datapoint {
         name: String,
         levelType: String,
@@ -37,7 +38,7 @@ mod report {
         unit: String,
         values: Vec<f64>,
     }
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Serialize, Deserialize, Debug, Clone)]
     struct Event {
         validTime: String,
         parameters: Vec<Datapoint>,
@@ -55,7 +56,15 @@ mod report {
         pub geometry: Location,
         timeSeries: Vec<Event>,
     }
-    pub fn generate_report(r: String) -> Result<Report, serde_json::Error> {
-        serde_json::from_str(&r)
+
+    impl Report {
+        pub fn new(r: String) -> Result<Report, serde_json::Error> {
+            serde_json::from_str(&r)
+        }
+
+        pub fn get_events(&self) -> Vec<Event> {
+            self.timeSeries.clone()
+        }
     }
+    
 }
