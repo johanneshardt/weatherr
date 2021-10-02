@@ -3,7 +3,6 @@
 mod report;
 
 fn main() {
-    println!("test");
     let lund = Position {
         lat: 55.7058,
         long: 13.1932,
