@@ -1,6 +1,10 @@
 fn main() {
     println!("test");
-    let res = match response() {
+    let lund = Position {
+        lat: 55.7058,
+        long: 13.1932,
+    };
+    let res = match response(lund) {
         Ok(r) => r,
         Err(e) => panic!("Invalid response: {}", e),
     };
@@ -11,16 +15,12 @@ fn main() {
     }
 }
 
-struct Position {
+pub struct Position {
     lat: f64,
     long: f64,
 }
 
-pub fn response() -> Result<String, attohttpc::Error> {
-    let pos = Position {
-        lat: 55.7058,
-        long: 13.1932,
-    };
+pub fn response(pos: Position) -> Result<String, attohttpc::Error> {
     let link = format!("http://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{}/lat/{}/data.json",
                         pos.long, pos.lat);
     Ok(attohttpc::get(link).send()?.text()?)
