@@ -141,4 +141,4 @@ Cargo.lock
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,rust
-.result.json
+result.json
