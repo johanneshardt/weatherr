@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use chrono::prelude::*;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Datapoint {
@@ -10,7 +11,7 @@ struct Datapoint {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Event {
-    validTime: String,
+    validTime: DateTime<Utc>,
     parameters: Vec<Datapoint>,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -21,8 +22,8 @@ pub struct Location {
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Report {
-    approvedTime: String,
-    referenceTime: String,
+    approvedTime: DateTime<Utc>,
+    referenceTime: DateTime<Utc>,
     pub geometry: Location,
     timeSeries: Vec<Event>,
 }
@@ -34,5 +35,9 @@ impl Report {
 
     pub fn get_events(&self) -> Vec<Event> {
         self.timeSeries.clone()
+    }
+
+    pub fn info(&self) -> String {
+        format!("Report from {}, approved at {}", self.referenceTime, self.approvedTime)
     }
 }

@@ -13,7 +13,7 @@ fn main() {
     };
 
     match report::Report::new(res) {
-        Ok(r) => println!("Report: \n {:#?}", r.get_events()[0]),
+        Ok(r) => println!("Report: \n {:#?}", r.info()),
         Err(e) => panic!("Couldn't deserialize: {}", e),
     }
 }
