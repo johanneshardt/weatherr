@@ -1,6 +1,8 @@
 
 #[allow(non_snake_case)]
 mod report;
+use std::fs::File;
+use std::io::prelude::*;
 
 fn main() {
     let lund = Position {
@@ -12,8 +14,10 @@ fn main() {
         Err(e) => panic!("Invalid response: {}", e),
     };
 
+    write_file(&res);
+
     match report::Report::new(res) {
-        Ok(r) => println!("First event: \n{}", r.get_events()[0]),
+        Ok(r) => println!("First event: \n{}", r.get_events()[2]),
         Err(e) => panic!("Couldn't deserialize: {}", e),
     }
 }
@@ -26,5 +30,11 @@ pub struct Position {
 pub fn response(pos: Position) -> Result<String, attohttpc::Error> {
     let link = format!("http://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{}/lat/{}/data.json",
                         pos.long, pos.lat);
-    Ok(attohttpc::get(link).send()?.text()?)
+    attohttpc::get(link).send()?.text()
+}
+
+pub fn write_file(f: &str) -> std::io::Result<()> {
+    let mut file = File::create("result.json")?;
+    file.write_all(f.as_bytes())?;
+    Ok(())
 }
