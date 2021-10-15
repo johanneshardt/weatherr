@@ -97,7 +97,9 @@ impl Event {
             unit: String::from("m/s"),
         }
     }
-
+    
+    // Counted clockwise from "south", in degrees.
+    // TODO implement human-readable formatter
     pub fn wind_direction(&self) -> Measurement {
         Measurement {
             symbol: String::from("🧭"),

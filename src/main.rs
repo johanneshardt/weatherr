@@ -17,7 +17,10 @@ fn main() {
     write_file(&res);
 
     match report::Report::new(res) {
-        Ok(r) => println!("First event: \n{}", r.get_events()[0]),
+        Ok(r) => {let events = r.get_events();
+                        for e in &events[0..5] {
+                            println!("\n{}", e)}
+                        },
         Err(e) => panic!("Couldn't deserialize: {}", e),
     }
 }
@@ -33,7 +36,7 @@ pub fn response(pos: Position) -> Result<String, attohttpc::Error> {
     attohttpc::get(link).send()?.text()
 }
 
-pub fn write_file(f: &str) -> std::io::Result<()> {
+fn write_file(f: &str) -> std::io::Result<()> {
     let mut file = File::create("result.json")?;
     file.write_all(f.as_bytes())?;
     Ok(())
