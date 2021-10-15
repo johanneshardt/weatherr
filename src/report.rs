@@ -58,22 +58,26 @@ impl fmt::Display for Event {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}\n{}\n{}\n{}",
+            "{}\n{}\n{}\n{}\n{}",
             self.format_time(),
             Event::format_measurement(self.temperature()),
             Event::format_measurement(self.wind_speed()),
-            self.weatherstatus()
+            Event::format_measurement(self.wind_direction()),
+            self.weatherstatus(),
         )
     }
 }
 
 impl Event {
     pub fn format_measurement(m: Measurement) -> String {
-        format!("{} {}: {}{}", m.symbol, m.name, m.value, m.unit)
+        let displacement = 30 - m.name.len();               // TODO make this easier to modify
+        format!("{} {}: {:>d$}{}", m.symbol, m.name, m.value, m.unit, d = displacement)
     }
 
+    // TODO fix time offset
     pub fn format_time(&self) -> String {
-        format!("🕐 Time: {}", self.validTime)
+        let local_time: DateTime<Local> = DateTime::from(self.validTime);
+        format!("{} ({})", local_time.format("🕐 %A, %B %e at %R"), local_time.offset())
     }
     // TODO: better getter for fields in Event
     pub fn temperature(&self) -> Measurement {
@@ -91,6 +95,15 @@ impl Event {
             name: String::from("Wind speed"),
             value: self.value_of("ws"),
             unit: String::from("m/s"),
+        }
+    }
+
+    pub fn wind_direction(&self) -> Measurement {
+        Measurement {
+            symbol: String::from("🧭"),
+            name: String::from("Wind direction"),
+            value: self.value_of("wd"),
+            unit: String::from("°"),
         }
     }
 

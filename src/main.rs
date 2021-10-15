@@ -17,7 +17,7 @@ fn main() {
     write_file(&res);
 
     match report::Report::new(res) {
-        Ok(r) => println!("First event: \n{}", r.get_events()[2]),
+        Ok(r) => println!("First event: \n{}", r.get_events()[0]),
         Err(e) => panic!("Couldn't deserialize: {}", e),
     }
 }
