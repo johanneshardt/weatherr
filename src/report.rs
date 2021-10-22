@@ -58,11 +58,12 @@ impl fmt::Display for Event {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}\n{}\n{}\n{}\n{}",
+            "{}\n{}\n{}\n{}\n{}\n{}",
             self.format_time(),
             Event::format_measurement(self.temperature()),
             Event::format_measurement(self.wind_speed()),
             Event::format_measurement(self.wind_direction()),
+            Event::format_measurement(self.humidity()),
             self.weatherstatus(),
         )
     }
@@ -70,14 +71,34 @@ impl fmt::Display for Event {
 
 impl Event {
     pub fn format_measurement(m: Measurement) -> String {
-        let displacement = 30 - m.name.len();               // TODO make this easier to modify
-        format!("{} {}: {:>d$}{}", m.symbol, m.name, m.value, m.unit, d = displacement)
+        let displacement = 30 - m.name.len(); // TODO make this easier to modify
+        format!(
+            "{} {}: {:>d$}{}",
+            m.symbol,
+            m.name,
+            m.value,
+            m.unit,
+            d = displacement
+        )
     }
 
     // TODO fix time offset
     pub fn format_time(&self) -> String {
         let local_time: DateTime<Local> = DateTime::from(self.validTime);
-        format!("{} ({})", local_time.format("🕐 %A, %B %e at %R"), local_time.offset())
+        format!(
+            "{} ({})",
+            local_time.format("🕐 %A, %B %e at %R"),
+            local_time.offset()
+        )
+    }
+
+    pub fn humidity(&self) -> Measurement {
+        Measurement {
+            symbol: String::from("💧"),
+            name: String::from("Humidity"),
+            value: self.value_of("r"),
+            unit: String::from("%"),
+        }
     }
     // TODO: better getter for fields in Event
     pub fn temperature(&self) -> Measurement {
@@ -97,7 +118,7 @@ impl Event {
             unit: String::from("m/s"),
         }
     }
-    
+
     // Counted clockwise from "south", in degrees.
     // TODO implement human-readable formatter
     pub fn wind_direction(&self) -> Measurement {
