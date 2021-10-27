@@ -58,13 +58,14 @@ impl fmt::Display for Event {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "{}\n{}\n{}\n{}\n{}\n{}",
+            "{}\n{}\n{}\n{}\n{}\n{}\n{}\n",
             self.format_time(),
+            self.weatherstatus(),
             Event::format_measurement(self.temperature()),
             Event::format_measurement(self.wind_speed()),
             Event::format_measurement(self.wind_direction()),
             Event::format_measurement(self.humidity()),
-            self.weatherstatus(),
+            Event::format_measurement(self.precipation()),
         )
     }
 }
@@ -86,9 +87,8 @@ impl Event {
     pub fn format_time(&self) -> String {
         let local_time: DateTime<Local> = DateTime::from(self.validTime);
         format!(
-            "{} ({})",
-            local_time.format("🕐 %A, %B %e at %R"),
-            local_time.offset()
+            "{}\n",
+            local_time.format("🕐 %R\n%A, %B %e"),
         )
     }
 
@@ -98,6 +98,15 @@ impl Event {
             name: String::from("Humidity"),
             value: self.value_of("r"),
             unit: String::from("%"),
+        }
+    }
+
+    pub fn precipation(&self) -> Measurement {
+        Measurement {
+            symbol: "🌧️".to_owned(),
+            name: "Precipation".to_owned(),
+            value: self.value_of("pmean"),       // TODO: Multiple methods for other measurements of precipation
+            unit: "mm/h".to_owned(),
         }
     }
     // TODO: better getter for fields in Event

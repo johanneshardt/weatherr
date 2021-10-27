@@ -18,7 +18,7 @@ fn main() {
 
     match report::Report::new(res) {
         Ok(r) => {let events = r.get_events();
-                        for e in &events[0..5] {
+                        for e in &events[0..3] {
                             println!("\n{}", e)}
                         },
         Err(e) => panic!("Couldn't deserialize: {}", e),
