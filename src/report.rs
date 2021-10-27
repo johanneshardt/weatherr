@@ -1,4 +1,4 @@
-use chrono::prelude::*;
+use chrono::{prelude::*, Duration};
 use core::fmt;
 use serde::{Deserialize, Serialize};
 
@@ -86,10 +86,12 @@ impl Event {
     // TODO fix time offset
     pub fn format_time(&self) -> String {
         let local_time: DateTime<Local> = DateTime::from(self.validTime);
-        format!(
-            "{}\n",
-            local_time.format("🕐 %R\n%A, %B %e"),
-        )
+        let delta: Duration = local_time - Local::now();
+        match delta.num_hours() {
+            0..=24 => format!("{}\n", local_time.format("🕐 %R\nToday")), // TODO: Improve readability
+            25..=48 => format!("{}\n", local_time.format("🕐 %R\nTomorrow")),
+            _ => format!("{}\n", local_time.format("🕐 %R\n%A, %B %e")),
+        }
     }
 
     pub fn humidity(&self) -> Measurement {
@@ -105,7 +107,7 @@ impl Event {
         Measurement {
             symbol: "🌧️".to_owned(),
             name: "Precipation".to_owned(),
-            value: self.value_of("pmean"),       // TODO: Multiple methods for other measurements of precipation
+            value: self.value_of("pmean"), // TODO: Multiple methods for other measurements of precipation
             unit: "mm/h".to_owned(),
         }
     }
