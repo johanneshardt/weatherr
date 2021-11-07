@@ -1,4 +1,3 @@
-
 #[allow(non_snake_case)]
 mod report;
 use std::fs::File;
@@ -17,20 +16,22 @@ fn main() {
     write_file(&res);
 
     match report::Report::new(res) {
-        Ok(r) => {let events = r.get_events();
-                        for e in &events[0..3] {
-                            println!("\n{}", e)}
-                        },
+        Ok(r) => {
+            let events = r.get_events();
+            for e in &events[0..3] {
+                println!("\n{}", e)
+            }
+        }
         Err(e) => panic!("Couldn't deserialize: {}", e),
     }
 }
 
-pub struct Position {
+struct Position {
     lat: f64,
     long: f64,
 }
 
-pub fn response(pos: Position) -> Result<String, attohttpc::Error> {
+fn response(pos: Position) -> Result<String, attohttpc::Error> {
     let link = format!("http://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{}/lat/{}/data.json",
                         pos.long, pos.lat);
     attohttpc::get(link).send()?.text()

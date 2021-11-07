@@ -54,6 +54,7 @@ impl Report {
     }
 }
 
+// TODO: Modular output depending on params, maybe separate output from Event struct
 impl fmt::Display for Event {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
@@ -96,10 +97,10 @@ impl Event {
 
     pub fn humidity(&self) -> Measurement {
         Measurement {
-            symbol: String::from("💧"),
-            name: String::from("Humidity"),
+            symbol: "💧".to_owned(),
+            name: "Humidity".to_owned(),
             value: self.value_of("r"),
-            unit: String::from("%"),
+            unit: "%".to_owned(),
         }
     }
 
@@ -114,19 +115,28 @@ impl Event {
     // TODO: better getter for fields in Event
     pub fn temperature(&self) -> Measurement {
         Measurement {
-            symbol: String::from("🌡️"),
-            name: String::from("Temperature"),
+            symbol: "🌡️".to_owned(),
+            name: "Temperature".to_owned(),
             value: self.value_of("t"),
-            unit: String::from("C"),
+            unit: "C".to_owned(),
+        }
+    }
+
+    pub fn wind_gust_speed(&self) -> Measurement {
+        Measurement {
+            symbol: "🌪️".to_owned(),
+            name: "Gust speed".to_owned(),
+            value: self.value_of("gust"),
+            unit: "m/s".to_owned(),
         }
     }
 
     pub fn wind_speed(&self) -> Measurement {
         Measurement {
-            symbol: String::from("💨"),
-            name: String::from("Wind speed"),
+            symbol: "💨".to_owned(),
+            name: "Wind speed".to_owned(),
             value: self.value_of("ws"),
-            unit: String::from("m/s"),
+            unit: "m/s".to_owned(),
         }
     }
 
@@ -134,10 +144,10 @@ impl Event {
     // TODO implement human-readable formatter
     pub fn wind_direction(&self) -> Measurement {
         Measurement {
-            symbol: String::from("🧭"),
-            name: String::from("Wind direction"),
+            symbol: "🧭".to_owned(),
+            name: "Wind direction".to_owned(),
             value: self.value_of("wd"),
-            unit: String::from("°"),
+            unit: "°".to_owned(),
         }
     }
 
@@ -172,26 +182,21 @@ pub enum WeatherStatus {
     Cloudy,
     Overcast,
     Fog,
-    LightRainShowers,
-    ModerateRainShowers,
-    HeavyRainShowers,
+    RainShowers(Level),
     Thunderstorm,
-    LightSleetShowers,
-    ModerateSleetShowers,
-    HeavySleetShowers,
-    LightSnowShowers,
-    ModerateSnowShowers,
-    HeavySnowShowers,
-    LightRain,
-    ModerateRain,
-    HeavyRain,
+    SleetShowers(Level),
+    SnowShowers(Level),
+    Rain(Level),
     Thunder,
-    LightSleet,
-    ModerateSleet,
-    HeavySleet,
-    LightSnowfall,
-    ModerateSnowfall,
-    HeavySnowfall,
+    Sleet(Level),
+    Snowfall(Level),
+}
+
+#[derive(Clone, Copy)]
+pub enum Level {
+    Light,
+    Moderate,
+    Heavy,
 }
 
 //TODO: better implementation of WEATHERVARIANTS
@@ -205,26 +210,26 @@ impl WeatherStatus {
             WeatherStatus::Cloudy,
             WeatherStatus::Overcast,
             WeatherStatus::Fog,
-            WeatherStatus::LightRainShowers,
-            WeatherStatus::ModerateRainShowers,
-            WeatherStatus::HeavyRainShowers,
+            WeatherStatus::RainShowers(Level::Light),
+            WeatherStatus::RainShowers(Level::Moderate),
+            WeatherStatus::RainShowers(Level::Heavy),
             WeatherStatus::Thunderstorm,
-            WeatherStatus::LightSleetShowers,
-            WeatherStatus::ModerateSleetShowers,
-            WeatherStatus::HeavySleetShowers,
-            WeatherStatus::LightSnowShowers,
-            WeatherStatus::ModerateSnowShowers,
-            WeatherStatus::HeavySnowShowers,
-            WeatherStatus::LightRain,
-            WeatherStatus::ModerateRain,
-            WeatherStatus::HeavyRain,
+            WeatherStatus::SleetShowers(Level::Light),
+            WeatherStatus::SleetShowers(Level::Moderate),
+            WeatherStatus::SleetShowers(Level::Heavy),
+            WeatherStatus::SnowShowers(Level::Light),
+            WeatherStatus::SnowShowers(Level::Moderate),
+            WeatherStatus::SnowShowers(Level::Heavy),
+            WeatherStatus::Rain(Level::Light),
+            WeatherStatus::Rain(Level::Moderate),
+            WeatherStatus::Rain(Level::Heavy),
             WeatherStatus::Thunder,
-            WeatherStatus::LightSleet,
-            WeatherStatus::ModerateSleet,
-            WeatherStatus::HeavySleet,
-            WeatherStatus::LightSnowfall,
-            WeatherStatus::ModerateSnowfall,
-            WeatherStatus::HeavySnowfall,
+            WeatherStatus::Sleet(Level::Light),
+            WeatherStatus::Sleet(Level::Moderate),
+            WeatherStatus::Sleet(Level::Heavy),
+            WeatherStatus::Snowfall(Level::Light),
+            WeatherStatus::Snowfall(Level::Moderate),
+            WeatherStatus::Snowfall(Level::Heavy),
         ]
     }
     pub fn from(code: usize) -> Result<WeatherStatus, &'static str> {
@@ -245,26 +250,26 @@ impl fmt::Display for WeatherStatus {
             WeatherStatus::Cloudy => "Cloudy sky",
             WeatherStatus::Overcast => "Overcast sky",
             WeatherStatus::Fog => "Fog",
-            WeatherStatus::LightRainShowers => "Light rain showers",
-            WeatherStatus::ModerateRainShowers => "Moderate rain showers",
-            WeatherStatus::HeavyRainShowers => "Heavy rain showers",
+            WeatherStatus::RainShowers(Level::Light) => "Light rain showers",
+            WeatherStatus::RainShowers(Level::Moderate) => "Moderate rain showers",
+            WeatherStatus::RainShowers(Level::Heavy) => "Heavy rain showers",
             WeatherStatus::Thunderstorm => "Thunderstorm",
-            WeatherStatus::LightSleetShowers => "Light sleet showers",
-            WeatherStatus::ModerateSleetShowers => "Moderate sleet showers",
-            WeatherStatus::HeavySleetShowers => "Heavy sleet showers",
-            WeatherStatus::LightSnowShowers => "Light snow showers",
-            WeatherStatus::ModerateSnowShowers => "Moderate snow showers",
-            WeatherStatus::HeavySnowShowers => "Heavy snow showers",
-            WeatherStatus::LightRain => "Light rain",
-            WeatherStatus::ModerateRain => "Moderate rain",
-            WeatherStatus::HeavyRain => "Heavy rain",
+            WeatherStatus::SleetShowers(Level::Light) => "Light sleet showers",
+            WeatherStatus::SleetShowers(Level::Moderate) => "Moderate sleet showers",
+            WeatherStatus::SleetShowers(Level::Heavy) => "Heavy sleet showers",
+            WeatherStatus::SnowShowers(Level::Light) => "Light snow showers",
+            WeatherStatus::SnowShowers(Level::Moderate) => "Moderate snow showers",
+            WeatherStatus::SnowShowers(Level::Heavy) => "Heavy snow showers",
+            WeatherStatus::Rain(Level::Light) => "Light rain",
+            WeatherStatus::Rain(Level::Moderate) => "Moderate rain",
+            WeatherStatus::Rain(Level::Heavy) => "Heavy rain",
             WeatherStatus::Thunder => "Thunder",
-            WeatherStatus::LightSleet => "Light sleet",
-            WeatherStatus::ModerateSleet => "Moderate sleet",
-            WeatherStatus::HeavySleet => "Heavy sleet",
-            WeatherStatus::LightSnowfall => "Light snowfall",
-            WeatherStatus::ModerateSnowfall => "Moderate snowfall",
-            WeatherStatus::HeavySnowfall => "Heavy snowfall",
+            WeatherStatus::Sleet(Level::Light) => "Light sleet",
+            WeatherStatus::Sleet(Level::Moderate) => "Moderate sleet",
+            WeatherStatus::Sleet(Level::Heavy) => "Heavy sleet",
+            WeatherStatus::Snowfall(Level::Light) => "Light snowfall",
+            WeatherStatus::Snowfall(Level::Moderate) => "Moderate snowfall",
+            WeatherStatus::Snowfall(Level::Heavy) => "Heavy snowfall",
         };
         write!(f, "{}", description)
     }
