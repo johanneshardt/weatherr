@@ -1,23 +1,25 @@
 # weatherr
 
-A command line interface for obtaining weather reports from the swedish meteorological institute (SMHI). 
+A command line interface for obtaining weather reports from the Swedish meteorological institute (SMHI). 
 
 ## Description
 
-An in-depth paragraph about your project and overview of use. TODO
+This project uses the [SMHI open data meteorological forecasst API](https://opendata.smhi.se/apidocs/metfcst/index.html) 
+for generating accurate weather reports up to 10 days in advance. Note that this is limited to geographical points located within, or close to Sweden. Geocoding is implemented using the Google Maps geocoding API. That is, the CLI accepts a string describing a location such as "Stockholm, Sweden" as well as coordinates. 
 
 ## Getting Started
 
-TODO
-
 ### Dependencies
 
-TODO
+* A recent version of [Rust](https://www.rust-lang.org/tools/install) (1.56.0 or later). 
+* For enabling geocoding, a Google Cloud Platform project connected to a billing account.
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* Clone this repo and run '''cargo install --path .''' inside the directory.
+* Setup a project thorugh the [Google Cloud Console](https://developers.google.com/maps/gmp-get-started)  and enable billing.
+* Enable the *geocoding API* for the project and copy the api key ([instructions here](https://developers.google.com/maps/gmp-get-started)).
+* Create a file named '''.env.secrets''' with a single line: '''MAPS_API_KEY=your_api_key_here'''.
 
 TODO
 
