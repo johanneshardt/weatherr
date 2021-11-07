@@ -16,10 +16,10 @@ for generating accurate weather reports up to 10 days in advance. Note that this
 
 ### Installing
 
-* Clone this repo and run '''cargo install --path .''' inside the directory.
+* Clone this repo and run ```cargo install --path .``` inside the directory.
 * Setup a project thorugh the [Google Cloud Console](https://developers.google.com/maps/gmp-get-started)  and enable billing.
 * Enable the *geocoding API* for the project and copy the api key ([instructions here](https://developers.google.com/maps/gmp-get-started)).
-* Create a file named '''.env.secrets''' with a single line: '''MAPS_API_KEY=your_api_key_here'''.
+* Create a file named ```.env.secrets``` with a single line: ```MAPS_API_KEY=your_api_key_here```.
 
 TODO
 
