@@ -141,4 +141,10 @@ Cargo.lock
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,rust
+
+# For debugging response data
 result.json
+
+# Ignore .env files except the example
+.env*
+!.env.example

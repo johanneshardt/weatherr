@@ -159,9 +159,9 @@ impl Event {
         self.parse(s).expect("Missing parameter").values[0]
     }
 
-    // TODO: handle unwrap() call
+    // TODO: handle expect() call
     pub fn weatherstatus(&self) -> WeatherStatus {
-        WeatherStatus::from(self.parameters[18].values[0] as usize).unwrap()
+        WeatherStatus::from(self.parameters[18].values[0] as usize).expect("Invalid weather code provided.")
     }
 }
 
@@ -199,7 +199,7 @@ pub enum Level {
     Heavy,
 }
 
-//TODO: better implementation of WEATHERVARIANTS
+// TODO: Improve namespacing, maybe refactor into module?
 impl WeatherStatus {
     pub fn WEATHERVARIANTS() -> Vec<WeatherStatus> {
         vec![
