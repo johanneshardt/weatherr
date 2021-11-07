@@ -7,6 +7,10 @@ A command line interface for obtaining weather reports from the Swedish meteorol
 This project uses the [SMHI open data meteorological forecasst API](https://opendata.smhi.se/apidocs/metfcst/index.html) 
 for generating accurate weather reports up to 10 days in advance. Note that this is limited to geographical points located within, or close to Sweden. Geocoding is implemented using the Google Maps geocoding API. That is, the CLI accepts a string describing a location such as "Stockholm, Sweden" as well as coordinates. 
 
+### Billing
+
+Since the Google Maps api used is paid, you may be charged for requests. This shouldn't be a problem for personal use, 
+as you are provided with [$200 worth of credits a month](https://developers.google.com/maps/documentation/geocoding/usage-and-billing) for free.
 ## Getting Started
 
 ### Dependencies
