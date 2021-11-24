@@ -7,7 +7,7 @@ use std::path::Path;
 fn main() {
     let maps_api_key: String = load_maps_api_key(Path::new(".env.secrets"));
 
-    let pos = match pos_from_string("Lulea, sweden", &maps_api_key) {
+    let pos = match pos_from_string("Lund, Sweden", &maps_api_key) {
         Ok(p) => p,
         Err(e) => panic!("Invalid response: {}", e),
     };
@@ -36,6 +36,7 @@ struct Position {
     long: f64,
 }
 // TODO: More robust JSON parsing, remove expect?
+// TODO: Detect wrong API key?
 fn pos_from_string(s: &str, key: &str) -> Result<Position, serde_json::Error> {
     use serde_json::Value;
     let res = maps_response(s, key).expect("Maps request failed.");

@@ -3,16 +3,18 @@ use core::fmt;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 struct Datapoint {
     name: String,
-    levelType: String,
+    level_type: String,
     level: i32,
     unit: String,
     values: Vec<f64>,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct Event {
-    validTime: DateTime<Utc>,
+    valid_time: DateTime<Utc>,
     parameters: Vec<Datapoint>,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -23,11 +25,12 @@ pub struct Location {
     coordinates: Vec<Vec<f64>>,
 }
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Report {
-    approvedTime: DateTime<Utc>,
-    referenceTime: DateTime<Utc>,
+    approved_time: DateTime<Utc>,
+    reference_time: DateTime<Utc>,
     pub geometry: Location,
-    timeSeries: Vec<Event>,
+    time_series: Vec<Event>,
 }
 
 impl Report {
@@ -36,18 +39,18 @@ impl Report {
     }
 
     pub fn get_events(&self) -> Vec<Event> {
-        self.timeSeries.clone()
+        self.time_series.clone()
     }
 
     pub fn timeinfo(&self) -> String {
         format!(
             "Report from {}, approved at {}",
-            self.referenceTime, self.approvedTime
+            self.reference_time, self.approved_time
         )
     }
 
     pub fn get_event(&self, index: usize) -> Result<Event, &str> {
-        match self.timeSeries.get(index) {
+        match self.time_series.get(index) {
             Some(event) => Ok(event.clone()),
             None => Err("Event index out of bounds."),
         }
@@ -86,7 +89,7 @@ impl Event {
 
     // TODO fix time offset
     pub fn format_time(&self) -> String {
-        let local_time: DateTime<Local> = DateTime::from(self.validTime);
+        let local_time: DateTime<Local> = DateTime::from(self.valid_time);
         let delta: Duration = local_time - Local::now();
         match delta.num_hours() {
             0..=24 => format!("{}\n", local_time.format("🕐 %R\nToday")), // TODO: Improve readability
