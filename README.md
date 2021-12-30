@@ -1,4 +1,4 @@
-# weatherr
+# weatherr 🌤️
 
 A command line interface for obtaining weather reports from the Swedish meteorological institute (SMHI). 
 
@@ -11,6 +11,7 @@ for generating accurate weather reports up to 10 days in advance. Note that this
 
 Since the Google Maps api used is paid, you may be charged for requests. This shouldn't be a problem for personal use, 
 as you are provided with [$200 worth of credits a month](https://developers.google.com/maps/documentation/geocoding/usage-and-billing) for free.
+
 ## Getting Started
 
 ### Dependencies
@@ -18,7 +19,7 @@ as you are provided with [$200 worth of credits a month](https://developers.goog
 * A recent version of [Rust](https://www.rust-lang.org/tools/install) (1.56.0 or later). 
 * For enabling geocoding, a Google Cloud Platform project connected to a billing account.
 
-### Installing
+### Installation
 
 * Clone this repo and run ```cargo install --path .``` inside the directory.
 * Setup a project thorugh the [Google Cloud Console](https://developers.google.com/maps/gmp-get-started)  and enable billing.
@@ -50,11 +51,9 @@ TODO
 
 ## Authors
 
-[Me (Johannes Hardt](https://github.com/johanneshardt)
+[Me (Johannes Hardt)](https://github.com/johanneshardt)
 
 ## Version History
-
-This project uses SEMVER for versioning.
 
 TODO
 
@@ -64,4 +63,9 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 
 ## Acknowledgments
 
+* [attohttpc](https://github.com/sbstp/attohttpc)
+* [chrono](https://github.com/chronotope/chrono)
+* [clap](https://github.com/clap-rs/clap)
 * [Minimal README template](https://gist.github.com/DomPizzie/7a5ff55ffa9081f2de27c315f5018afc)
+* [serde](https://github.com/serde-rs/serde)
+* [serde JSON](https://github.com/serde-rs/json)
