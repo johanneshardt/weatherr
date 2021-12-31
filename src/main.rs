@@ -1,32 +1,51 @@
+mod cli;
 #[allow(non_snake_case)]
 mod report;
 use std::fs::{self, File};
 use std::io::prelude::*;
 use std::path::Path;
+use std::process::exit;
+
+use clap::StructOpt;
 
 fn main() {
+    let cli = cli::Opts::parse();
+
     let maps_api_key: String = load_maps_api_key(Path::new(".env.secrets"));
 
-    let pos = match pos_from_string("Lund, Sweden", &maps_api_key) {
-        Ok(p) => p,
-        Err(e) => panic!("Invalid response: {}", e),
-    };
+    if let Some(desc) = cli.description.as_deref() {
+        let pos = match pos_from_string(desc, &maps_api_key) {
+            Ok(p) => p,
+            Err(e) => panic!("Invalid response: {}", e),
+        };
 
-    let res = match smhi_response(pos) {
-        Ok(r) => r,
-        Err(e) => panic!("Invalid response: {}", e),
-    };
-
-    write_file(&res);
-
-    match report::Report::new(res) {
-        Ok(r) => {
-            let events = r.get_events();
-            for e in &events[0..3] {
-                println!("\n{}", e)
+        let res = match smhi_response(pos) {
+            Ok(r) => {
+                if r.contains("Requested point is out of bounds") {
+                    eprintln!("Location not in SMHI's database.");
+                    exit(1);
+                } else {
+                    r
+                }
             }
+            Err(e) => panic!("Invalid response: {}", e),
+        };
+
+        // For debugging purposes
+        write_file(&res);
+        match report::Report::new(res) {
+            Ok(r) => {
+                let events = r.get_events();
+                for e in &events[0..3] {
+                    println!("\n{}", e)
+                }
+            }
+            Err(e) => panic!("Couldn't deserialize: {}", e),
         }
-        Err(e) => panic!("Couldn't deserialize: {}", e),
+    }
+
+    if let Some(coords) = cli.coordinates.as_deref() {
+        println!("Not implemented yet.")
     }
 }
 
@@ -57,10 +76,7 @@ fn pos_from_string(s: &str, key: &str) -> Result<Position, serde_json::Error> {
         .and_then(|v| v.as_f64())
         .expect("Missing location.");
 
-    Ok(Position {
-        lat: lat,
-        long: long,
-    })
+    Ok(Position { lat, long })
 }
 
 fn maps_response(s: &str, key: &str) -> Result<String, attohttpc::Error> {
@@ -83,12 +99,12 @@ fn smhi_response(pos: Position) -> Result<String, attohttpc::Error> {
         long: round(pos.long),
     };
 
-    println!("Position: {:#?}", pos);
     let link = format!("http://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{}/lat/{}/data.json",
                         pos.long, pos.lat);
     attohttpc::get(link).send()?.text()
 }
 
+// For debugging purposes
 fn write_file(f: &str) -> std::io::Result<()> {
     let mut file = File::create("result.json")?;
     file.write_all(f.as_bytes())?;

@@ -164,7 +164,8 @@ impl Event {
 
     // TODO: handle expect() call
     pub fn weatherstatus(&self) -> WeatherStatus {
-        WeatherStatus::from(self.parameters[18].values[0] as usize).expect("Invalid weather code provided.")
+        WeatherStatus::from(self.parameters[18].values[0] as usize)
+            .expect("Invalid weather code provided.")
     }
 }
 
