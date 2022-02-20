@@ -26,26 +26,11 @@ as you are provided with [$200 worth of credits a month](https://developers.goog
 * Enable the *geocoding API* for the project and copy the api key ([instructions here](https://developers.google.com/maps/gmp-get-started)).
 * Create a file named ```.env.secrets``` with a single line: ```MAPS_API_KEY=your_api_key_here```.
 
-TODO
-
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-
 TODO
 
-code blocks for commands
-```
-
 ## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-
-```
 
 TODO
 
@@ -55,7 +40,11 @@ TODO
 
 ## Version History
 
-TODO
+Features targeted for 1.0.0 release:
+- Generate 1 or 3 day reports
+- Accept either coordinates or a physical location as argument
+- Some error handling for missing locations and invalid requests
+- Completed simple documentation here
 
 ## License
 
